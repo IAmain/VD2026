@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will you be my Valentine? 💖</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #ffb6c1 0%, #ff9a9e 25%, #fecfef 50%, #ffb6c1 75%, #ffc0cb 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Floating hearts */
+    .hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.4;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .heart:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; font-size: 1.2rem; }
+    .heart:nth-child(2) { left: 80%; top: 15%; animation-delay: 1s; font-size: 1.8rem; }
+    .heart:nth-child(3) { left: 25%; top: 70%; animation-delay: 2s; font-size: 1rem; }
+    .heart:nth-child(4) { left: 70%; top: 65%; animation-delay: 0.5s; font-size: 1.4rem; }
+    .heart:nth-child(5) { left: 50%; top: 40%; animation-delay: 3s; font-size: 1.1rem; }
+    .heart:nth-child(6) { left: 15%; top: 50%; animation-delay: 1.5s; font-size: 1.6rem; }
+    .heart:nth-child(7) { left: 85%; top: 45%; animation-delay: 2.5s; font-size: 1.3rem; }
+    .heart:nth-child(8) { left: 40%; top: 85%; animation-delay: 0.8s; font-size: 1rem; }
+    .heart:nth-child(9) { left: 60%; top: 25%; animation-delay: 3.5s; font-size: 1.5rem; }
+    .heart:nth-child(10) { left: 30%; top: 35%; animation-delay: 1.2s; font-size: 1.2rem; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+      50% { transform: translateY(-20px) rotate(10deg); opacity: 0.7; }
+    }
+
+    /* Main content - above hearts */
+    .content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* Card */
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3), 0 0 0 1px rgba(255, 182, 193, 0.5);
+      text-align: center;
+      transition: transform 0.4s ease, opacity 0.5s ease;
+    }
+
+    .card.hidden {
+      opacity: 0;
+      transform: scale(0.8);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .card h1 {
+      color: #c71585;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      line-height: 1.4;
+      text-shadow: 0 1px 2px rgba(199, 21, 133, 0.2);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.85rem 1.8rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-weight: 600;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff69b4, #ff1493);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    }
+
+    .btn-yes:hover {
+      box-shadow: 0 8px 28px rgba(255, 105, 180, 0.5);
+    }
+
+    .btn-no {
+      background: linear-gradient(135deg, #a0a0a0, #808080);
+      color: white;
+      position: relative;
+      transition: left 0.3s ease, top 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Book container - hidden initially */
+    .book-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 90vw;
+      max-width: 420px;
+      perspective: 1200px;
+      opacity: 0;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      z-index: 3;
+    }
+
+    .book-container.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .book {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      display: flex;
+      transform-style: preserve-3d;
+    }
+
+    .book-left,
+    .book-right {
+      width: 50%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 0 8px 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .book-left {
+      background: linear-gradient(135deg, #fff5f8 0%, #ffe4ec 100%);
+      border-radius: 8px 0 0 8px;
+      box-shadow: inset 2px 0 8px rgba(255, 105, 180, 0.15);
+      border: 1px solid rgba(255, 182, 193, 0.6);
+      border-right: none;
+    }
+
+    .book-right {
+      background: linear-gradient(135deg, #ffe4ec 0%, #ffb6c1 100%);
+      transform-origin: left center;
+      transform: rotateY(0deg);
+      transition: transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+      border: 1px solid rgba(255, 182, 193, 0.6);
+      border-left: 1px solid rgba(199, 21, 133, 0.2);
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-container.open .book-right {
+      transform: rotateY(-165deg);
+    }
+
+    .book-message {
+      color: #c71585;
+      font-size: clamp(0.9rem, 2.8vw, 1.1rem);
+      line-height: 1.55;
+      text-align: center;
+      font-weight: 500;
+      max-width: 92%;
+      margin: 0;
+    }
+
+    .book-right .book-cover-text {
+      color: #c71585;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 480px) {
+      .book {
+        height: 380px;
+      }
+      .book-message {
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="content">
+    <div class="card" id="card">
+      <h1>Will you be my Valentine?</h1>
+      <div class="buttons">
+        <button class="btn btn-yes" id="btnYes">Yes 💖</button>
+        <button class="btn btn-no" id="btnNo">No eww😈 </button>
+      </div>
+    </div>
+
+    <div class="book-container" id="bookContainer">
+      <div class="book" id="book">
+        <div class="book-left">
+          <p class="book-message">Happy Valentine's Day to my one and only love ❤️ I love you so much and I'm so grateful to have you as my girlfriend</p>
+        </div>
+        <div class="book-right">
+          <span class="book-cover-text">Open me 💕</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Floating hearts
+      const heartsContainer = document.getElementById('hearts');
+      const heartChars = ['❤️', '💕', '💖', '💗', '💓'];
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'heart';
+        heart.textContent = heartChars[i % heartChars.length];
+        heartsContainer.appendChild(heart);
+      }
+
+      const card = document.getElementById('card');
+      const btnYes = document.getElementById('btnYes');
+      const btnNo = document.getElementById('btnNo');
+      const bookContainer = document.getElementById('bookContainer');
+      const book = document.getElementById('book');
+
+      // No will button run away on hover - random position and will avoid the center (card area)
+      function getRandomPosition() {
+        const padding = 100;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const centerX = w / 2;
+        const centerY = h / 2;
+        const avoidRadius = 180;
+        let x, y;
+        do {
+          x = padding + Math.random() * (w - 2 * padding);
+          y = padding + Math.random() * (h - 2 * padding);
+        } while (
+          (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) < avoidRadius * avoidRadius
+        );
+        return { x, y };
+      }
+
+      btnNo.addEventListener('mouseenter', function () {
+        const { x, y } = getRandomPosition();
+        btnNo.style.position = 'fixed';
+        btnNo.style.left = x + 'px';
+        btnNo.style.top = y + 'px';
+        btnNo.style.transform = 'translate(-50%, -50%) scale(1.05)';
+      });
+
+      // Yes button - Opens the book and shows the message
+      btnYes.addEventListener('click', function () {
+        card.classList.add('hidden');
+        bookContainer.classList.add('visible');
+
+        requestAnimationFrame(function () {
+          setTimeout(function () {
+            bookContainer.classList.add('open');
+          }, 400);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
